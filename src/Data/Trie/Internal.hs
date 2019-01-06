@@ -73,7 +73,7 @@ import Control.Monad       (liftM, liftM3, liftM4)
 #ifdef APPLICATIVE_IN_BASE
 import Control.Monad       (ap)
 import Control.Applicative (Applicative(..), (<$>))
-import Data.Foldable       (Foldable(..))
+import Data.Foldable       (Foldable)
 import Data.Traversable    (Traversable(traverse))
 #endif
 
@@ -303,9 +303,11 @@ instance Monad Trie where
 
 
 -- This instance is more sensible than Data.IntMap and Data.Map's
-instance (Monoid a) => Monoid (Trie a) where
-    mempty  = empty
-    mappend = mergeBy $ \x y -> Just (x `mappend` y)
+instance (Semigroup a) => Semigroup (Trie a) where
+    (<>) = mergeBy $ \x y -> Just (x <> y)
+
+instance Semigroup a => Monoid (Trie a) where
+    mempty = empty
 
 
 -- Since the Monoid instance isn't natural in @a@, I can't think
